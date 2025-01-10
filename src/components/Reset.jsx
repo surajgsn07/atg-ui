@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom"; // Import useParams
 
-const ResetPassword = ({ token }) => {
+const ResetPassword = () => {
+  const { token } = useParams(); // Extract token from URL params
   const [newPassword, setNewPassword] = useState("");
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!token) {
+      alert("Invalid or missing token.");
+    }
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when form is submitted
+    setLoading(true);
     try {
       const response = await axios.post(
         `https://atg-3hp6.onrender.com/auth/reset-password/${token}`,
@@ -17,7 +25,7 @@ const ResetPassword = ({ token }) => {
     } catch (error) {
       alert(error.response.data.message || "Something went wrong");
     } finally {
-      setLoading(false); // Set loading to false after submission completes
+      setLoading(false);
     }
   };
 
@@ -39,7 +47,7 @@ const ResetPassword = ({ token }) => {
         <button
           type="submit"
           className="bg-red-500 text-white py-2 px-4 rounded w-full"
-          disabled={loading} // Disable button while loading
+          disabled={loading}
         >
           {loading ? (
             <div className="spinner-border animate-spin h-5 w-5 border-t-2 border-white rounded-full"></div>
