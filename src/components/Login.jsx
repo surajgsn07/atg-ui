@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
+  const [loading, setLoading] = useState(false); // Loading state to track the form submission process
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -11,6 +12,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true when form is being submitted
     try {
       const response = await axios.post(
         "https://atg-3hp6.onrender.com/auth/login",
@@ -20,6 +22,8 @@ const Login = () => {
       localStorage.setItem("token", response.data.token);
     } catch (error) {
       alert(error.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false); // Set loading state back to false after request completes
     }
   };
 
@@ -49,8 +53,13 @@ const Login = () => {
         <button
           type="submit"
           className="bg-green-500 text-white py-2 px-4 rounded w-full"
+          disabled={loading} // Disable the button while loading
         >
-          Login
+          {loading ? (
+            <div className="spinner-border mx-auto animate-spin h-5 w-5 border-t-2 border-white rounded-full"></div>
+          ) : (
+            "Login"
+          )}
         </button>
         <div className="mt-4 text-sm text-center">
           <p>

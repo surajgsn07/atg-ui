@@ -3,16 +3,21 @@ import axios from "axios";
 
 const ResetPassword = ({ token }) => {
   const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
     try {
-      const response = await axios.post(`https://atg-3hp6.onrender.com/auth/reset-password/${token}`, {
-        newPassword,
-      });
+      const response = await axios.post(
+        `https://atg-3hp6.onrender.com/auth/reset-password/${token}`,
+        { newPassword }
+      );
       alert(response.data.message);
     } catch (error) {
       alert(error.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false); // Set loading to false after submission completes
     }
   };
 
@@ -34,8 +39,13 @@ const ResetPassword = ({ token }) => {
         <button
           type="submit"
           className="bg-red-500 text-white py-2 px-4 rounded w-full"
+          disabled={loading} // Disable button while loading
         >
-          Reset Password
+          {loading ? (
+            <div className="spinner-border animate-spin h-5 w-5 border-t-2 border-white rounded-full"></div>
+          ) : (
+            "Reset Password"
+          )}
         </button>
       </form>
     </div>

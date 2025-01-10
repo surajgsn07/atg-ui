@@ -3,14 +3,21 @@ import axios from "axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state to track form submission
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true when the form is being submitted
     try {
-      const response = await axios.post("https://atg-3hp6.onrender.com/auth/forgetPassword", { email });
+      const response = await axios.post(
+        "https://atg-3hp6.onrender.com/auth/forgetPassword",
+        { email }
+      );
       alert(response.data.message);
     } catch (error) {
       alert(error.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false); // Set loading state back to false after the request is completed
     }
   };
 
@@ -32,8 +39,13 @@ const ForgotPassword = () => {
         <button
           type="submit"
           className="bg-yellow-500 text-white py-2 px-4 rounded w-full"
+          disabled={loading} // Disable the button while loading
         >
-          Send Reset Link
+          {loading ? (
+            <div className="spinner-border animate-spin h-5 w-5 border-t-2 border-white rounded-full"></div>
+          ) : (
+            "Send Reset Link"
+          )}
         </button>
       </form>
     </div>

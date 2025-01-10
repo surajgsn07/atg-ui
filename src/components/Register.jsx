@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +8,7 @@ const Register = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,11 +16,17 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true when form is being submitted
     try {
-      const response = await axios.post("https://atg-3hp6.onrender.com/auth/register", formData);
+      const response = await axios.post(
+        "https://atg-3hp6.onrender.com/auth/register",
+        formData
+      );
       alert(response.data.message);
     } catch (error) {
       alert(error.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false); // Set loading state back to false after request completes
     }
   };
 
@@ -56,9 +64,20 @@ const Register = () => {
         <button
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded w-full"
+          disabled={loading} // Disable button while loading
         >
-          Register
+          {loading ? (
+            <div className="spinner-border animate-spin h-5 w-5 border-t-2 border-white rounded-full"></div>
+          ) : (
+            "Register"
+          )}
         </button>
+        <p className="mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
