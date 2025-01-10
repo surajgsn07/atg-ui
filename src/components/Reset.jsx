@@ -19,7 +19,7 @@ const ResetPassword = () => {
     try {
       const response = await axios.post(
         `https://atg-3hp6.onrender.com/auth/reset-password/${token}`,
-        { newPassword }
+        { newPassword , token }
       );
       alert(response.data.message);
     } catch (error) {
